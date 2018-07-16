@@ -5,7 +5,11 @@
 
 ## What is realtime push
 >
- The realtime push is a simple protocol using HTTP version 2 to deliver real time events which can be delivered (or “pushed”) in a timely fashion. An example would be Slack. In Slack, users can subscribe to channels. If messages are published to a channel(or some channels), all users subscribed to that channel are notified.
+     The realtime push is a simple protocol using HTTP version 2 to   deliver real time events which can be delivered (or “pushed”) in a   timely fashion. An example would be Slack.  
+     In Slack, users can subscribe to channels. If messages are published  
+     to a channel(or some channels), all users subscribed to that channel  
+     are notified. This procedure is formally called "pub/sub model".
+     In a pub/sub model, any message published to a topic is immediately   received by all of the subscribers to the topic.
 
 ## What is special with pushpin?
 - It is open source(yay!)
