@@ -1,9 +1,9 @@
 from copy import deepcopy
 import json
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotAllowed
-from django_liveresource import internal_request, canonical_uri, parse_header_params, channel_for_uri, get_resourceinfo
 from gripcontrol import WebSocketMessageFormat
 from django_grip import websocket_only, publish
+
 
 class WsRequestError(Exception):
     def __init__(self, condition, message=''):
@@ -12,6 +12,7 @@ class WsRequestError(Exception):
 
 
 def _handle_ws_request(ws, req):
+    '''
     rtype = req.get('type')
     if rtype is None or not isinstance(rtype, basestring) or rtype not in ('subscribe', 'unsubscribe', 'ping'):
         raise WsRequestError('unknown-type')
@@ -41,9 +42,12 @@ def _handle_ws_request(ws, req):
     else: # unsubscribe
         ws.unsubscribe(channel_for_uri(uri, mode))
         return {'type': 'unsubscribed'}
+    '''
+    return None
 
 
 def multi(request):
+    '''
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
 
@@ -106,6 +110,8 @@ def multi(request):
     # to help out the middleware, provide list of ResourceInfo if the response would be empty
     resp.multi_info = info if len(results) == 0 else []
     return resp
+    '''
+    return None
 
 
 @websocket_only
