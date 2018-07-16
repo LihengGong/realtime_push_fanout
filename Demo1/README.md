@@ -60,3 +60,18 @@ pushpin --route="* localhost:8000"
 ```sh
 curl -i -H 'Content-Type: application/websocket-events' -d OPEN$'\r'$'\n' http://127.0.0.1:7999/users/socket/
 ```
+
+And an expected sample output is:
+```sh
+HTTP/1.1 200 OK
+Date: Mon, 16 Jul 2018 20:13:43 GMT
+Server: WSGIServer/0.2 CPython/3.6.3
+Content-Type: application/websocket-events
+Sec-WebSocket-Extensions: grip
+X-Frame-Options: SAMEORIGIN
+Content-Length: 59
+
+OPEN
+TEXT 2a
+c:{"channel": "test", "type": "subscribe"}
+```
