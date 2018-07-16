@@ -1,66 +1,38 @@
-Django-LiveResource
--------------------
-Author: Justin Karneges <justin@fanout.io>
+# fanout/pushpin demos
 
-LiveResource library for Python/Django.
+## Demo1: use pushpin as the proxy, Django as the backend, and curl as the front end.
 
-Requirements
-------------
+How to run.
+- Make sure [pushpin](https://pushpin.org/docs/install/) is correctly installed.
 
-* django-grip
-
-Install
--------
-
-You can install from PyPi:
-
-    sudo pip install django-liveresource
-
-Or from this repository:
-
-    sudo python setup.py install
-
-Sample usage
-------------
-
-Set GRIP_PROXIES in settings.py:
-
-```python
-# pushpin and/or fanout.io is used for sending realtime data to clients
-GRIP_PROXIES = [
-    # pushpin
-    {
-        'key': 'changeme',
-        'control_uri': 'http://localhost:5561'
-    }
-    # fanout.io
-    #{
-    #    'key': b64decode('your-realm-key'),
-    #    'control_uri': 'http://api.fanout.io/realm/your-realm',
-    #    'control_iss': 'your-realm'
-    #}
-]
+- In source code root directory:
+```sh
+pip install django-grip
 ```
 
-You can also set any other EPCP servers that aren't necessarily proxies with PUBLISH_SERVERS:
+Run without pushpin.
 
-```python
-PUBLISH_SERVERS = [
-    {
-        'uri': 'http://example.com/base-uri',
-        'iss': 'your-iss',
-        'key': 'your-key'
-    }
-]
+- Launch Django server:
+```sh
+python manage.py startserver
+```
+- Send data and see the echo:
+```sh
+curl -i -H 'Content-Type: application/websocket-events' -d OPEN$'\r'$'\n' http://127.0.0.1:8000/users/socket/
 ```
 
-Include GripMiddleware and LiveResourceMiddleware, in that order:
+Run with pushpin.
+- Launch Django server:
+```sh
+python manage.py startserver
+```
 
-```python
-MIDDLEWARE_CLASSES = (
-    ...
-    'django_grip.GripMiddleware',
-    'django_liveresource.LiveResourceMiddleware',
-    ...
-)
+- Start pushpin:
+```sh
+pushpin --route="* localhost:8000"
+```
+
+- Send data and see the echo:
+```sh
+curl -i -H 'Content-Type: application/websocket-events' -d OPEN$'\r'$'\n' http://127.0.0.1:7999/users/socket/
 ```
