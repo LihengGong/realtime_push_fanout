@@ -49,7 +49,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_grip.GripMiddleware',
-    'django_liveresource.LiveResourceMiddleware',
+    # 'django_liveresource.LiveResourceMiddleware',
 ]
 
 
