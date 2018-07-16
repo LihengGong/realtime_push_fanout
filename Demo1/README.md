@@ -1,6 +1,4 @@
-# fanout/pushpin demos
-
-## Demo1: use pushpin as the proxy, Django as the backend, and curl as the front end.
+# Demo1: use pushpin as the proxy, Django as the backend, and curl as the front end.
 
 ## How to run.
 - Make sure [pushpin](https://pushpin.org/docs/install/) is correctly installed.
