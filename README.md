@@ -32,7 +32,7 @@ To name a few:
 - ...
 
 ## Pushpin message flow:
-![alt text](https://github.com/LihengGong/fanout/blob/master/Demo1/msg_sequence1.png)
+![alt text](https://github.com/LihengGong/fanout/blob/master/Demo1/msg_sequence0.png)
 
 ## Resources
 For a complete survey of realtime push tools, refer to [this link](https://www.leggetter.co.uk/real-time-web-technologies-guide/)
