@@ -24,7 +24,10 @@ In a pub/sub model, any message published to a topic is immediately received by 
 There are many similar products.
 
 To name a few:
-- Pusher(most user-friendly but expensive)
-- Pubnub
-- Pushwoosh
+- [Pusher](https://pusher.com/)(most user-friendly but expensive)
+- [Pubnub](https://www.pubnub.com/)
+- [Pushwoosh](https://www.pushwoosh.com/)
 - ...
+
+## Resources
+For a complete survey of realtime push tools, refer to [this link](https://www.leggetter.co.uk/real-time-web-technologies-guide/)
