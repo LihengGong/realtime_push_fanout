@@ -10,7 +10,7 @@ How to run.
 pip install django-grip
 ```
 
-<p>Run **without** pushpin.
+1. <p>Run **without** pushpin.
 
 ```
 +------------------+                 +----------------------+  
@@ -31,9 +31,9 @@ python manage.py startserver
 ```sh
 curl -i -H 'Content-Type: application/websocket-events' -d OPEN$'\r'$'\n' http://127.0.0.1:8000/users/socket/
 ```
+<br><br>
 
-
-<p>Run **with** pushpin.
+2. <p>Run **with** pushpin.
 
 ```
 +-------------------+         +-------+         +-------------------------+
