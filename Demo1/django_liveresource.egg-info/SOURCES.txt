@@ -1,0 +1,11 @@
+README.md
+setup.cfg
+setup.py
+django_liveresource/__init__.py
+django_liveresource/urls.py
+django_liveresource/views.py
+django_liveresource.egg-info/PKG-INFO
+django_liveresource.egg-info/SOURCES.txt
+django_liveresource.egg-info/dependency_links.txt
+django_liveresource.egg-info/requires.txt
+django_liveresource.egg-info/top_level.txt
