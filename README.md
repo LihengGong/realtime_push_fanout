@@ -18,6 +18,8 @@ In a pub/sub model, any message published to a topic is immediately received by 
 - It is more a proxy than a server. More specifically:
     - It is transparent with clients(i.e. clients can be totally unaware of the existence of pushpin server).
     - The backend must handle proxied requests, which means the backend is responsible for subscribing the clients to specific channels.
+        - Pros: Client does not need to know anything about publish and subscribe.
+        - Cons: More development burdens are delegated to Backend.
     - The backend must tell Pushpin to push data. Regardless of how clients are connected, data may be pushed to them by making an HTTP POST request to Pushpin’s private control API (http://localhost:5561/publish/ by default). Pushpin will inject this data into any client connections as necessary.
 
 ## Similar products
