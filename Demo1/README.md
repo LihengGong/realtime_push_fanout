@@ -2,7 +2,7 @@
 
 ## Demo1: use pushpin as the proxy, Django as the backend, and curl as the front end.
 
-How to run.
+## How to run.
 - Make sure [pushpin](https://pushpin.org/docs/install/) is correctly installed.
 
 - In source code root directory:
@@ -75,3 +75,6 @@ OPEN
 TEXT 2a
 c:{"channel": "test", "type": "subscribe"}
 ```
+
+## Resources:
+The discussion in [this link](https://github.com/fanout/django-grip/issues/1) is a perfect reference for what happens.
