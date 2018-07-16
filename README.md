@@ -34,5 +34,5 @@ pushpin --route="* localhost:8000"
 
 - Send data and see the echo:
 ```sh
-curl -i -H 'Content-Type: application/websocket-events' -d OPEN$'\r'$'\n' http://127.0.0.1:8000/users/socket/
+curl -i -H 'Content-Type: application/websocket-events' -d OPEN$'\r'$'\n' http://127.0.0.1:7999/users/socket/
 ```
