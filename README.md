@@ -17,10 +17,10 @@ In a pub/sub model, any message published to a topic is immediately received by 
     - The "cloud" version of pushpin is fanout(which costs money of course).
 - It is more a proxy than a server. More specifically:
     - It is transparent with clients(i.e. clients can be totally unaware of the existence of pushpin server).
-    - The backend must handle proxied requests, which means the backend is responsible for subscribing the clients to specific channels.
+    - The **backend** must handle proxied requests, which means the backend is responsible for subscribing the clients to specific channels.
         - Pros: Client does not need to know anything about publish and subscribe.
         - Cons: More development burdens are delegated to Backend.
-    - The backend must tell Pushpin to push data. Regardless of how clients are connected, data may be pushed to them by making an HTTP POST request to Pushpin’s private control API (http://localhost:5561/publish/ by default). Pushpin will inject this data into any client connections as necessary.
+    - The **backend** must tell Pushpin to push data. Regardless of how clients are connected, data may be pushed to them by making an HTTP POST request to Pushpin’s private control API (http://localhost:5561/publish/ by default). Pushpin will inject this data into any client connections as necessary.
 
 ## Similar products
 There are many similar products.
@@ -30,6 +30,9 @@ To name a few:
 - [Pubnub](https://www.pubnub.com/)
 - [Pushwoosh](https://www.pushwoosh.com/)
 - ...
+
+## Pushpin message flow:
+![alt text](https://github.com/LihengGong/fanout/blob/master/Demo1/msg_sequence.png)
 
 ## Resources
 For a complete survey of realtime push tools, refer to [this link](https://www.leggetter.co.uk/real-time-web-technologies-guide/)
