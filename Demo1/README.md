@@ -12,7 +12,7 @@ pip install django-grip
 
 Run **without** pushpin.
 
->
+```
 +------------------+                 +----------------------+  
 |                  +---------------> |                      |  
 |                  |                 |                      |  
@@ -21,7 +21,7 @@ Run **without** pushpin.
 |                  |                 |                      |  
 |                  |                 |                      |  
 +------------------+                 +----------------------+  
-
+```
 
 - Launch Django server:
 ```sh
@@ -35,6 +35,7 @@ curl -i -H 'Content-Type: application/websocket-events' -d OPEN$'\r'$'\n' http:/
 
 Run **with** pushpin.
 
+```
 +-------------------+         +-------+         +-------------------------+
 |                   +-------> |       +-------> |                         |
 |                   |         |       |         |                         |
@@ -44,7 +45,7 @@ Run **with** pushpin.
 |                   |         |       |         |                         |
 |                   |         |       |         |                         |
 +-------------------+         +-------+         +-------------------------+
-
+```
 - Launch Django server:
 ```sh
 python manage.py startserver
