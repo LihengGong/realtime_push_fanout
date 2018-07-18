@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>test websocket</title>
+</head>
+<body>
+<script type = "text/javascript">
+    function WebSocketTest() {
+        console.log("before open");
+        const ws = new WebSocket("ws://127.0.0.1:7999/users/socket/usera");
+
+        ws.onopen = function() {
+            console.log("open");
+        };
+
+        ws.onmessage = function(evt) {
+            const received_msg = evt.data;
+            console.log("received ", received_msg);
+        };
+
+        ws.onclose = function() {
+            console.log("Connection is closed...");
+        };
+    }
+</script>
+</body>
+<div id = "sse">
+    <a href = "javascript:WebSocketTest()">Run websocket usera</a>
+</div>
+</html>
