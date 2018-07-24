@@ -1,0 +1,89 @@
+{% load static %}
+<html>
+<html lang="en">
+  <head>
+    <meta id="meta" name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>test sub-pub</title>
+    <script src="{% static 'django_eventstream/json2.js' %}" charset="utf-8"></script>
+    <script src="{% static 'django_eventstream/eventsource.min.js' %}" charset="utf-8"></script>
+    <script src="{% static 'django_eventstream/reconnecting-eventsource.js' %}" charset="utf-8"></script>
+    <script src="{% static 'chat/jquery-3.2.1.min.js' %}" charset="utf-8}"></script>
+
+    <script type="text/javascript">
+
+      var testPubSub = function(user) {
+        var uri = 'events/?channel=room-' + encodeURIComponent('{{ room_id }}');
+        var es = new EventSource(uri, {
+          lastEventId: '{{ last_id }}'
+        });
+
+        var firstConnect = true;
+
+        es.onopen = function() {
+          if (!firstConnect) {
+            console.log('*** Connected');
+          }
+          firstConnect = false;
+        }
+
+        es.onerror = function() {
+          console.log('*** connection lost');
+        };
+
+        es.onmessage = function(e) {
+          console.log('onmessage');
+
+        }
+
+        console.log('before addEventListener');
+
+        es.addEventListener('message', function(e) {
+          console.log('event');
+          var a = 1 / 0;
+          console.log('event: ' + e.data);
+          msg = JSON.parse(e.data);
+
+          console.log();
+        }, false);
+        console.log('after addEventListener');
+
+        $('#send-form').submit(function() {
+          var text = $('#chat-input').val();
+
+          $('#chat-input').attr('disabled', 'true');
+          $('#send-button').attr('disabled', 'true');
+          $('#send-button').text('Sending....');
+          $.post('/rooms/{{ room_id }}/messages/', {from: user, text: text}
+          ).done(function(data) {
+            console.log('send response:' + JSON.stringify(data));
+          }).fail(function() {
+            alert('failed to send message');
+          }).always(function() {
+            $('#chat-input').val('');
+            $('#send-button').text('Send');
+            $('#chat-input').removeAttr('disabled');
+            $('#send-button').removeAttr('disabled');
+            $('#chat-input').focus();
+          });
+
+          return false;
+        });
+
+        $('#chat-input').focus();
+      };
+
+      $(function() {
+        testPubSub('{{ user|escapejs }}');
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="chat-input-area">
+      <form id="send-form">
+        <button id="send-button">Send</button>
+        <span id="chat-input-span"><input type="text" id="chat-input" autocomplete="off" /></span>
+      </form>
+    </div>
+  </body>
+</html>
