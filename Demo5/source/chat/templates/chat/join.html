@@ -1,0 +1,63 @@
+{% load static %}
+<html>
+  <head>
+    <meta id="meta" name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script src="{% static 'chat/jquery-3.2.1.min.js' %}"></script>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        color: #ffffff;
+        background-color: #00a79d;
+      }
+
+      input, div {
+        font-size: 16px;
+      }
+
+      form#join-form {
+        width: 80%;
+        overflow: hidden;
+        margin-top: 30%;
+        margin-bottom: 30%;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      span#nick-input-span {
+        display: block;
+        overflow: hidden;
+      }
+
+      input#nick-input {
+        max-width: 100%;
+      }
+    </style>
+
+    <script type="text/javascript">
+      $(function () {
+        $('#join-form').submit(function () {
+          var user = $('#nick-input').val();
+          if(user) {
+            window.location = '/{{ room_id|escapejs }}?user=' + user;
+          }
+          return false;
+        });
+
+        $('#nick-input').focus();
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="join-elements">
+      <form id="join-form">
+        <span id="nick-input-span">Nickname: <input type="text" id="nick-input" />
+        <button id="join-button">Join</button></span>
+      </form>
+    </div>
+  </body>
+</html>
