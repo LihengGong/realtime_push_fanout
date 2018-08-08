@@ -18,4 +18,24 @@ its [RUN] directory. This [RUN] directory can be configured in
 /usr/local/etc/pushpin/pushpin.conf.  
 For example, it can be configured as: /usr/local/var/run/pushpin  
 
-That socket is a ZMQ socket and we can use Python code to do the query.
+That socket is a [ZMQ socket](https://github.com/zeromq/pyzmq) and we can use Python code to do the query.  
+The Python code is quite simple and straightforward.
+
+First, connect to the socket.
+```python
+  sock_file = #[dir of Pushpin's run directory]
+  ctx = zmq.Context()
+  sock = ctx.socket(zmq.SUB)
+  sock.connect(sock_file)
+  sock.setsockopt(zmq.SUBSCRIBE, b"")
+```
+
+Then receive data:
+```python
+  # note that in Python3, the data received from the socket is raw binary. That's why there is the 'b' prefix.
+  while True:
+    m_raw = sock.recv()
+    mtype, mdata = m_raw.split(b' ', 1)
+    if len(mdata) > 1:
+      process_data(mtype, mdata)
+```
