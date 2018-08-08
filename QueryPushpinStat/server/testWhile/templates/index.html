@@ -59,15 +59,17 @@
 
             sock.onopen = function (ev) {
               console.log('sock connected. ' + sock)
+              sock.send('get info')
             }
 
             sock.onmessage = function (ev) {
               console.log('sock received message: ' + ev.data);
-              var data = JSON.parse(ev.data);
+              //var data = JSON.parse(ev.data);
             }
           },
           getStats: function () {
             console.log('placeholder now...')
+            //sock.send('get info')
           }
         }
       })
