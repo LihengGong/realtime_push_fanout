@@ -2,8 +2,10 @@ import socket
 import tnetstring
 import zmq
 from django.conf import settings
-from .models import PushpinStat_Conn, PushpinStat_Sub
+from .models import PushpinStat_Conn, PushpinStat_Sub, PushpinConnected
 from .postpone import postpone
+
+pushpin_connect = None
 
 
 @postpone
@@ -14,6 +16,12 @@ def read_stats_block():
     # TODO: although this task has been "backgrounded", we still
     # need to add some kind of check to avoid lauching this task
     # multiple times
+    global pushpin_connect
+    if not pushpin_connect:
+        pushpin_connect = PushpinConnected()
+    else:
+        print('already connected to Pushpin socket. Return')
+        return
     print('in getstats ready to connect to Pushpin socket')
     sock_file = settings.PUSHPIN_SOCKET_FILE
     ctx = zmq.Context()

@@ -22,3 +22,7 @@ class PushpinStat_Sub(models.Model):
     channel = models.CharField(max_length=100)
     sub_cnt = models.IntegerField()
     unavailable = models.BooleanField()
+
+
+class PushpinConnected(object):
+    pass
