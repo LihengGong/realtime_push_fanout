@@ -129,4 +129,6 @@ ASGI_APPLICATION = 'server.routing.application'
 
 # Pushpin ZMQ socket settings
 
+# GRIP_URL = os.environ.get('GRIP_URL')
 PUSHPIN_SOCKET_FILE = 'ipc:///usr/local/var/run/pushpin/pushpin-stats'
+# PUSHPIN_SOCKET_FILE = os.environ.get('PUSHPIN_SOCKET_FILE')

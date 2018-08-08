@@ -24,6 +24,7 @@ def read_stats_block():
         return
     print('in getstats ready to connect to Pushpin socket')
     sock_file = settings.PUSHPIN_SOCKET_FILE
+    print('sock_file is: ', sock_file)
     ctx = zmq.Context()
     sock = ctx.socket(zmq.SUB)
     sock.connect(sock_file)

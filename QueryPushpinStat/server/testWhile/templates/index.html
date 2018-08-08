@@ -64,7 +64,6 @@
             sock.onmessage = function (ev) {
               console.log('sock received message: ' + ev.data);
               var data = JSON.parse(ev.data);
-
             }
           },
           getStats: function () {
