@@ -39,3 +39,11 @@ Then receive data:
     if len(mdata) > 1:
       process_data(mtype, mdata)
 ```
+
+## Several problems to consider
+
+1. How to send the Pushpin stat data to frontend?
+
+2. How to keep record the Pushpin stat data?
+
+3. Should the socket reading method be placed in Django view method?
