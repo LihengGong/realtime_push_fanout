@@ -19,19 +19,27 @@
         <div class="row">
           <h1>
             Pushpin Status
-            <button class="btn btn-primary" v-on:click="connSock()">START MONITORING</button>
+            <button class="btn btn-primary" v-on:click="connSock();updateConn();">START MONITORING</button>
           </h1>
           <table class="table">
             <thead>
               <tr>
-                <th scope="col">#</th>
+                <th scope="col">Conn ID</th>
                 <th scope="col">Type</th>
-                <th scope="col">Action</th>
+                <th scope="col">Peer IP</th>
+                <th scope="col">Unavailable</th>
+                <th scope="col">Placeholder</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-
+              <tr v-for="conn in conns">
+                <th scope="row">${conn.conn_id}</th>
+                <td>${conn.type}</td>
+                <td>${conn.peer_ip}</td>
+                <td>${conn.unavailable}</td>
+                <td>
+                  <button class="btn btn-info">Detail</button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -44,10 +52,11 @@
         delimiters: ['${','}'],
         data: {
           conns: [],
-          sock: null
+          sock: null,
+          curConn: {},
         },
         mounted: function () {
-          this.getStats();
+          this.preupdate();
         },
         methods: {
           connSock: function () {
@@ -59,7 +68,7 @@
 
             sock.onopen = function (ev) {
               console.log('sock connected. ' + sock)
-              sock.send('get info')
+              sock.send('get_conn')
             }
 
             sock.onmessage = function (ev) {
@@ -67,7 +76,17 @@
               //var data = JSON.parse(ev.data);
             }
           },
-          getStats: function () {
+          updateConn: function () {
+            this.$http.get('/api/statconn/')
+            .then((response) => {
+              this.conns = response.data;
+              //this.loading = false;
+            })
+            .catch((err) => {
+              console.log(err);
+            })
+          },
+          preupdate: function () {
             console.log('placeholder now...')
             //sock.send('get info')
           }

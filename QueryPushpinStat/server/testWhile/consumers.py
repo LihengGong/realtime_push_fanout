@@ -1,6 +1,7 @@
 from channels.generic.websocket import WebsocketConsumer
 import json
 from .getstats import read_stats_block
+from .models import PushpinStat_Conn
 
 
 # websocket close code list
@@ -48,11 +49,18 @@ class StatConsumer(WebsocketConsumer):
         # text_data_json = json.loads(text_data)
         # message = text_data_json['message']
         print('in StatConsumer.receive, text_data: ', text_data)
+        send_data = None
+        if text_data == 'get_conn':
+            send_data = ''
+            for obj in PushpinStat_Conn.objects.all():
+                print('cur obj is: ', obj)
+                send_data += str(obj)
         # self.send('from server')
 
-        self.send(text_data=json.dumps({
-            'message': 'from server'
-        }))
+        if send_data:
+            self.send(text_data=json.dumps({
+                'message': send_data
+            }))
 
     # "def send(self, text_data=None, bytes_data=None, close=False):"
     def send1(self, bytes_data):

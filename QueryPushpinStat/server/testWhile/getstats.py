@@ -77,10 +77,15 @@ def process_data(mtype, mdata):
         c_id = 'none'
         conn_num = 0
         peer_ip = '0.0.0.0'
+        type = ''
         unavail = b'unavailable' in mdecode
         if b'id' in mdecode:
             c_id = mdecode[b'id'].decode('UTF-8')
-        ppstatconn = PushpinStat_Conn(unavailable=unavail, conn_id=c_id, conn_num=conn_num, peer_ip=peer_ip, type='ws')
+        if b'peer-address' in mdecode:
+            peer_ip = mdecode[b'peer-address'].decode('UTF-8')
+        if b'type' in mdecode:
+            type = mdecode[b'type'].decode('UTF-8')
+        ppstatconn = PushpinStat_Conn(unavailable=unavail, conn_id=c_id, conn_num=conn_num, peer_ip=peer_ip, type=type)
         ppstatconn.save()
     elif mtype == b'sub' or mtype == b'report' or mtype == b'activity' or mtype == b'message':
         channel = ''

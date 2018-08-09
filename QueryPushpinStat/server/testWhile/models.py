@@ -9,6 +9,9 @@ class PushpinStat_Conn(models.Model):
     peer_ip = models.GenericIPAddressField()
     type = models.CharField(max_length=20)
 
+    def __str__(self):
+        return '%s %s %s %s %s' % (self.conn_id, self.conn_num, self.peer_ip, self.type, self.unavailable)
+
 
 class PushpinStat_Report(models.Model):
     conn_num = models.IntegerField()
