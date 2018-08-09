@@ -40,10 +40,23 @@ Then receive data:
       process_data(mtype, mdata)
 ```
 
+## To-do
+- Improve frontend layout
+- Use standalone VUE.js frontend instead of the embedded Django template HTML file
+- Improve Pushpin stat data format
+- Redesign Pushpin stat data models
+ 
+
 ## Several problems to consider
 
 1. How to send the Pushpin stat data to frontend?
 
+[Solution]
+
 2. How to keep record the Pushpin stat data?
 
+[Solution]
+
 3. Should the socket reading method be placed in Django view method?
+
+[Solution]
