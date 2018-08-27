@@ -106,6 +106,9 @@ class StatConsumer(AsyncConsumer):
         print(event)
         await self.send('send')
 
+    async def websocket_disconnect(self, event):
+        print('websocket disconnected. event=', event)
+
     async def stat_message(self, event):
         print('in stat_message')
         print(event)
