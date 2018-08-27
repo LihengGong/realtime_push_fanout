@@ -1,7 +1,7 @@
 import tnetstring
 import zmq
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from celery import task
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
@@ -90,9 +90,18 @@ def decode_data(m_decode, m_type):
             print('find ip address. ', peer_ip)
         if b'type' in m_decode:
             m_type = m_decode[b'type'].decode(utf_8)
-        pp_stat_conn = PushpinStatConn(unavailable=unavail, conn_id=c_id,
-                                       conn_num=conn_num, peer_ip=peer_ip, type=m_type)
-        pp_stat_conn.save()
+
+        try:
+            obj = PushpinStatConn.objects.get(conn_id=c_id)
+            obj.conn_num = conn_num
+            obj.peer_ip = peer_ip
+            obj.type = m_type
+            obj.unavailable = unavail
+        except PushpinStatConn.DoesNotExist:
+            obj = PushpinStatConn(unavailable=unavail, conn_id=c_id,
+                                  conn_num=conn_num, peer_ip=peer_ip, type=m_type)
+        obj.save()
+        print('PushpinStatConn count: ', PushpinStatConn.objects.count())
         saved = True
     elif m_type == b'sub' or m_type == b'report' or m_type == b'activity' or m_type == b'message':
         channel = ''
@@ -105,9 +114,18 @@ def decode_data(m_decode, m_type):
         if b'subscribers' in m_decode:
             sub_cnt = m_decode[b'subscribers']
         unavailable = b'unavailable' in m_decode
-        pp_stat_sub = PushpinStatSub(channel=channel, mode=mode,
-                                     sub_cnt=sub_cnt, unavailable=unavailable)
-        pp_stat_sub.save()
+
+        try:
+            obj = PushpinStatSub.objects.get(channel=channel, mode=mode,
+                                             sub_cnt=sub_cnt, unavailable=unavailable)
+        except PushpinStatSub.DoesNotExist:
+            obj = PushpinStatSub(channel=channel, mode=mode,
+                                 sub_cnt=sub_cnt, unavailable=unavailable)
+        # except MultipleObjectsReturned:
+        #     PushpinStatSub.objects.filter(channel=channel, mode=mode,
+        #                                   sub_cnt=sub_cnt, unavailable=unavailable)
+        obj.save()
+        print('PushpinStatSub count: ', PushpinStatSub.objects.count())
         saved = True
     else:
         print('not a valid type')
