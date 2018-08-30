@@ -26,12 +26,6 @@ def user_login(request):
                 if user.is_active:
                     login(request, user)
                     return redirect('/messages/{}/'.format(room_name))
-            #     else:
-            #         return HttpResponse(status=401)  # status.HTTP_401_UNAUTHORIZED)
-            # else:
-            #     return HttpResponse(status=403)  # status.HTTP_403_FORBIDDEN)
-        # else:
-        # return HttpResponse(status=400)  # status.HTTP_400_BAD_REQUEST)
     else:
         form = LoginForm()
     return render(request,
@@ -51,15 +45,11 @@ def user_register(request):
             new_user.save()
             return render(request,
                           'chatapp/register_done.html')
-        else:
-            return render(request,
-                          'chatapp/register.html',
-                          {'user_form': user_form})
     else:
         user_form = UserRegistrationForm()
-        return render(request,
-                      'chatapp/register.html',
-                      {'user_form': user_form})
+    return render(request,
+                  'chatapp/register.html',
+                  {'user_form': user_form})
 
 
 @require_http_methods(['GET', 'POST'])
