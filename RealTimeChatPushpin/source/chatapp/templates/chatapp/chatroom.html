@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+    <div>
+        <h2 class="h2">Chat Messages</h2>
+{#        <p class="item">Chat Messages</p>#}
+        {% for message in prev_messages %}
+            <p>
+            {{ message }}
+            </p>
+        {% endfor %}
+    </div>
+    <div>
+{#        <p>chat</p>#}
+        <form action="." method="post" class="form-group">
+{#            <p><label><input type="text" id="chat-input"></label></p>#}
+            <p>{{ form.as_p }}</p>
+            <p><input class="btn-info" type="submit" value="Send"></p>
+            {% csrf_token %}
+        </form>
+    </div>
+{% endblock %}
