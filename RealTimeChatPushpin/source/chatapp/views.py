@@ -54,9 +54,11 @@ def user_register(request):
 
 @require_http_methods(['GET', 'POST'])
 def chat_messages(request, room_name):
+    prev_messages = []
+    history_messages = []
+
     if request.method == 'GET':
         room_obj, created = Room.objects.get_or_create(room_name=room_name)
-        prev_messages = []
         print('chat_messages: request=', request)
         print('chat_messages: request.POST', request.POST)
         print('chat_messages: request.GET', request.GET)
@@ -64,14 +66,6 @@ def chat_messages(request, room_name):
         print('chat_messages: room_obj=', room_obj)
         if not created:
             history_messages = room_obj.room_messages.all()[:50]
-            for message in history_messages:
-                prev_messages.append('{}'.format(message))
-        # return HttpResponse(prev_messages, content_type='application/json')
-        message_form = MessageForm()
-        return render(request,
-                      'chatapp/chatroom.html',
-                      {'prev_messages': prev_messages,
-                       'form': message_form})
     else:
         # TODO broadcast the chat message to all clients in the same room
         print('chat_messages: request.POST=', request.POST)
@@ -86,12 +80,12 @@ def chat_messages(request, room_name):
                           text=cur_message)
         message.save()
         print('POST: message=', message)
-        prev_messages = []
         history_messages = room_obj.room_messages.all()[:50]
-        for message in history_messages:
-            prev_messages.append('{}'.format(message))
-        # return HttpResponse(status=status.HTTP_201_CREATED)
-        return render(request,
-                      'chatapp/chatroom.html',
-                      {'prev_messages': prev_messages,
-                       'form': MessageForm()})
+
+    for message in history_messages:
+        prev_messages.append('{}'.format(message))
+
+    return render(request,
+                  'chatapp/chatroom.html',
+                  {'prev_messages': prev_messages,
+                   'form': MessageForm()})
