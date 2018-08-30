@@ -1,4 +1,4 @@
-# Demos to show how pushpin works
+# A simple Pushpin dashboard
 
 ## What is fanout/pushpin
 [Pushpin](https://pushpin.org/) is an [open-source](https://github.com/fanout) self-hosted realtime push server.
