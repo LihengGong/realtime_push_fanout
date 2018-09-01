@@ -26,4 +26,5 @@ class LoginForm(forms.Form):
 
 
 class MessageForm(forms.Form):
-    message = forms.CharField(max_length=100)
+    message = forms.CharField(max_length=100,
+                              widget=forms.TextInput(attrs={'cols': 100, 'size': 200}))

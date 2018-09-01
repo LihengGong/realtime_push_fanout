@@ -4,6 +4,7 @@ from django.views.decorators.http import require_http_methods
 from django.contrib.auth import authenticate, login
 # from rest_framework.decorators import api_view
 # from rest_framework import status
+from django_eventstream import send_event
 from .forms import LoginForm, UserRegistrationForm, MessageForm
 from .models import Message, Room
 
@@ -66,6 +67,15 @@ def chat_messages(request, room_name):
         print('chat_messages: room_obj=', room_obj)
         if not created:
             history_messages = room_obj.room_messages.all()[:50]
+        for message in history_messages:
+            prev_messages.append('{}'.format(message))
+
+        # need to redesign the following code
+        return render(request,
+                      'chatapp/chatroom.html',
+                      {'prev_messages': prev_messages,
+                       'form': MessageForm(),
+                       'room_name': room_name})
     else:
         # TODO broadcast the chat message to all clients in the same room
         print('chat_messages: request.POST=', request.POST)
@@ -80,12 +90,19 @@ def chat_messages(request, room_name):
                           text=cur_message)
         message.save()
         print('POST: message=', message)
+        # one client sends a message; let's broadcast to all clients in the same room
+        print('POST: broadcast to room:', room_name)
+        print('POST: cur_message=', cur_message)
+        send_event('room-{}'.format(room_name), 'message', {'message': cur_message})
         history_messages = room_obj.room_messages.all()[:50]
 
-    for message in history_messages:
-        prev_messages.append('{}'.format(message))
-
-    return render(request,
-                  'chatapp/chatroom.html',
-                  {'prev_messages': prev_messages,
-                   'form': MessageForm()})
+    # for message in history_messages:
+    #     prev_messages.append('{}'.format(message))
+    #
+    # # need to redesign the following code
+    # return render(request,
+    #               'chatapp/chatroom.html',
+    #               {'prev_messages': prev_messages,
+    #                'form': MessageForm(),
+    #                'room_name': room_name})
+    return HttpResponse(status=200)

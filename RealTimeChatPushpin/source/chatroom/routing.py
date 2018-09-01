@@ -3,5 +3,5 @@ import chatapp.routing
 
 
 application = ProtocolTypeRouter({
-    # 'http': URLRouter(chatapp.routing.urlpatterns),
+    'http': URLRouter(chatapp.routing.urlpatterns),
 })
