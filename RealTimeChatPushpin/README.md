@@ -3,5 +3,5 @@
 
 
 ### TODO
-- Integrate Pushpin
 - Restructure code
+- Improve frontend code structure(Vue.js)
