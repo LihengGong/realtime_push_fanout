@@ -11,40 +11,36 @@
     <div id="chatroom">
     <div>
         <h2 class="h2">Chat Messages</h2>
-{#        <p class="item">Chat Messages</p>#}
-        {% for message in prev_messages %}
-            <p>
-            {{ message }}
-            </p>
-        {% endfor %}
+        <table class="table">
+            <tbody>
+                <tr v-for="msg in chat_messages">
+                    <td>${msg}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
     <div>
-{#        <p>chat</p>#}
-        <form action="." method="post" class="form-group">
-{#            <p><label><input type="text" id="chat-input"></label></p>#}
-            <span class="text">{{ form.as_p }}</span>
+        <form action="." method="post" class="form-group" id="send-form">
+            <label><input type="text" id="chat-input"></label>
             <p><input class="btn-info" type="submit" value="Send"></p>
             {% csrf_token %}
         </form>
     </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.5"></script>
     <script type="text/javascript">
       var vm = new Vue({
           el: '#chatroom',
           delimiters: ['${','}'],
           data: {
-              chat_log: [],
+              chat_messages: [],
+              cur_message: $('#chat-input').val(),
           },
           mounted: function() {
-              this.conn_eventstream();
+              this.establish_eventstream();
+              this.get_messages();
           },
           methods: {
-              conn_eventstream: function(){
+              establish_eventstream: function(){
                   let uri = '/events/?channel=room-' + encodeURIComponent('{{ room_name }}');
                   let es = new ReconnectingEventSource(uri);
                   console.log('stream opened. uri=' + uri);
@@ -58,8 +54,44 @@
                   }, false);
 
                   es.addEventListener('message', function (evt) {
-                      console.log(('Message from server: ' + evt.data))
-                  }, false)
+                      // New message comes.
+                      console.log(('Message from server: ' + JSON.parse(evt.data).message));
+                      if (vm.chat_messages.length > 0) {
+                          vm.chat_messages.shift();
+                          vm.chat_messages.push(JSON.parse(evt.data).message);
+                      }
+                  }, false);
+
+                  $('#send-form').submit(function () {
+                      let text = $('#chat-input').val();
+                      let uri = '/messages/{{ room_name }}/';
+                      $.post(uri, {text: text})
+                          .done(function (data) {
+                              console.log('response data is: ' + data);
+                          })
+                          .fail(function () {
+                              alert('Cannot send message. Please check network connection');
+                          })
+                          .always(function () {
+                              //console.log('Placeholder now...');
+                              // Need to clear the input box for the next input
+                              let chat_input = $('#chat-input');
+                              chat_input.val('');
+                              chat_input.focus();
+                          });
+
+                      return false;
+                  });
+              },
+              get_messages: function () {
+                  this.$http.get('/messages/{{ room_name }}')
+                      .then((response) => {
+                          console.log('return messages:' + response.data);
+                          vm.chat_messages = response.data;
+                      })
+                      .catch((err) => {
+                          console.log(err);
+                      })
               }
           }
       })

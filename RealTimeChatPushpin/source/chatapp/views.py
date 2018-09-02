@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth import authenticate, login
+from django.core.serializers.json import DjangoJSONEncoder
 # from rest_framework.decorators import api_view
 # from rest_framework import status
 from django_eventstream import send_event
+import json
 from .forms import LoginForm, UserRegistrationForm, MessageForm
 from .models import Message, Room
 
@@ -26,7 +28,11 @@ def user_login(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return redirect('/messages/{}/'.format(room_name))
+                    # return redirect('/messages/{}/'.format(room_name))
+                    print('user_login: login succeeds. Rendering chatroom now')
+                    return render(request,
+                                  'chatapp/chatroom.html',
+                                  {'room_name': room_name})
     else:
         form = LoginForm()
     return render(request,
@@ -66,16 +72,13 @@ def chat_messages(request, room_name):
         print('chat_messages: created=', created)
         print('chat_messages: room_obj=', room_obj)
         if not created:
-            history_messages = room_obj.room_messages.all()[:50]
+            history_messages = room_obj.room_messages.all().order_by('-time_stamp')[:50]
+            history_messages = reversed(history_messages)
         for message in history_messages:
             prev_messages.append('{}'.format(message))
 
-        # need to redesign the following code
-        return render(request,
-                      'chatapp/chatroom.html',
-                      {'prev_messages': prev_messages,
-                       'form': MessageForm(),
-                       'room_name': room_name})
+        body = json.dumps(prev_messages, cls=DjangoJSONEncoder)
+        return HttpResponse(body, content_type='application/json')
     else:
         # TODO broadcast the chat message to all clients in the same room
         print('chat_messages: request.POST=', request.POST)
@@ -83,8 +86,11 @@ def chat_messages(request, room_name):
         print('POST: request.session', request.session)
         print('POST: request.user', request.user)
         print('POST: type(request.user)=', type(request.user))
-        cur_message = request.POST['message']
-        room_obj = Room.objects.get(room_name=room_name)
+        cur_message = request.POST['text']
+        try:
+            room_obj = Room.objects.get(room_name=room_name)
+        except Room.DoesNotExist:
+            return HttpResponseBadRequest('Invalid room name')
         message = Message(author=request.user,
                           room=room_obj,
                           text=cur_message)
@@ -93,16 +99,12 @@ def chat_messages(request, room_name):
         # one client sends a message; let's broadcast to all clients in the same room
         print('POST: broadcast to room:', room_name)
         print('POST: cur_message=', cur_message)
-        send_event('room-{}'.format(room_name), 'message', {'message': cur_message})
-        history_messages = room_obj.room_messages.all()[:50]
+        send_event('room-{}'.format(room_name), 'message', {'message': '{}'.format(message)})
+        history_messages = room_obj.room_messages.all().order_by('-time_stamp')[:50]
+        history_messages = reversed(history_messages)
+        for message in history_messages:
+            prev_messages.append('{}'.format(message))
 
-    # for message in history_messages:
-    #     prev_messages.append('{}'.format(message))
-    #
-    # # need to redesign the following code
-    # return render(request,
-    #               'chatapp/chatroom.html',
-    #               {'prev_messages': prev_messages,
-    #                'form': MessageForm(),
-    #                'room_name': room_name})
-    return HttpResponse(status=200)
+        print('POST: prev_messages=', prev_messages)
+        body = json.dumps(prev_messages, cls=DjangoJSONEncoder) + '\n'
+        return HttpResponse(body, content_type='application/json')
