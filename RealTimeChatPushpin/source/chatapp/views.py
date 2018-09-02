@@ -3,11 +3,9 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth import authenticate, login
 from django.core.serializers.json import DjangoJSONEncoder
-# from rest_framework.decorators import api_view
-# from rest_framework import status
 from django_eventstream import send_event
 import json
-from .forms import LoginForm, UserRegistrationForm, MessageForm
+from .forms import LoginForm, UserRegistrationForm
 from .models import Message, Room
 
 
@@ -63,29 +61,11 @@ def user_register(request):
 def chat_messages(request, room_name):
     prev_messages = []
     history_messages = []
+    created = True
 
     if request.method == 'GET':
         room_obj, created = Room.objects.get_or_create(room_name=room_name)
-        print('chat_messages: request=', request)
-        print('chat_messages: request.POST', request.POST)
-        print('chat_messages: request.GET', request.GET)
-        print('chat_messages: created=', created)
-        print('chat_messages: room_obj=', room_obj)
-        if not created:
-            history_messages = room_obj.room_messages.all().order_by('-time_stamp')[:50]
-            history_messages = reversed(history_messages)
-        for message in history_messages:
-            prev_messages.append('{}'.format(message))
-
-        body = json.dumps(prev_messages, cls=DjangoJSONEncoder)
-        return HttpResponse(body, content_type='application/json')
     else:
-        # TODO broadcast the chat message to all clients in the same room
-        print('chat_messages: request.POST=', request.POST)
-        print('POST: room_name=', room_name)
-        print('POST: request.session', request.session)
-        print('POST: request.user', request.user)
-        print('POST: type(request.user)=', type(request.user))
         cur_message = request.POST['text']
         try:
             room_obj = Room.objects.get(room_name=room_name)
@@ -95,16 +75,13 @@ def chat_messages(request, room_name):
                           room=room_obj,
                           text=cur_message)
         message.save()
-        print('POST: message=', message)
         # one client sends a message; let's broadcast to all clients in the same room
-        print('POST: broadcast to room:', room_name)
-        print('POST: cur_message=', cur_message)
         send_event('room-{}'.format(room_name), 'message', {'message': '{}'.format(message)})
+
+    if request.method == 'POST' or (request.method == 'GET' and not created):
         history_messages = room_obj.room_messages.all().order_by('-time_stamp')[:50]
         history_messages = reversed(history_messages)
-        for message in history_messages:
-            prev_messages.append('{}'.format(message))
-
-        print('POST: prev_messages=', prev_messages)
-        body = json.dumps(prev_messages, cls=DjangoJSONEncoder) + '\n'
-        return HttpResponse(body, content_type='application/json')
+    for message in history_messages:
+        prev_messages.append('{}'.format(message))
+    body = json.dumps(prev_messages, cls=DjangoJSONEncoder) + '\n'
+    return HttpResponse(body, content_type='application/json')
