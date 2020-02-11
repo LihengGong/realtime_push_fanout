@@ -13,7 +13,7 @@ channels-redis==2.3.0
 chardet==3.0.4
 constantly==15.1.0
 daphne==2.2.2
-Django==2.1
+Django==2.2.10
 django-grip==1.8.0
 djangorestframework==3.8.2
 gripcontrol==3.2.1
