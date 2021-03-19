@@ -12,7 +12,7 @@ Django==2.1
 django-dotenv==1.4.2
 django-eventstream==2.1.0
 django-grip==1.8.0
-djangorestframework==3.8.2
+djangorestframework==3.11.2
 gripcontrol==3.2.1
 hyperlink==18.0.0
 idna==2.7
