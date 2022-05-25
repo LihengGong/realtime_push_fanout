@@ -19,7 +19,7 @@ idna==2.7
 incremental==17.5.0
 pubcontrol==2.4.2
 PyHamcrest==1.9.0
-PyJWT==1.6.4
+PyJWT==2.4.0
 python-dotenv==0.9.1
 pytz==2018.5
 pyzmq==17.1.0
